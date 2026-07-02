@@ -1,0 +1,84 @@
+# Jenkins Remoting on AWS EC2 - Commands Used
+
+# Install Java (Master and Agent)
+
+sudo apt update
+sudo apt install openjdk-17-jdk -y
+
+# Verify Java
+
+java -version
+
+# Install Jenkins (Master)
+
+sudo wget -O /usr/share/keyrings/jenkins-keyring.asc 
+https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+
+echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc]" 
+https://pkg.jenkins.io/debian-stable binary/ | sudo tee 
+/etc/apt/sources.list.d/jenkins.list > /dev/null
+
+sudo apt update
+sudo apt install jenkins -y
+
+# Start and check Jenkins
+
+sudo systemctl start jenkins
+sudo systemctl enable jenkins
+sudo systemctl status jenkins
+
+# Get Jenkins initial admin password
+
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
+# Generate SSH key on Master
+
+ssh-keygen -t ed25519
+
+# Display public key
+
+cat /root/.ssh/id_ed25519.pub
+
+# Display private key
+
+cat /root/.ssh/id_ed25519
+
+# Create SSH directory on Agent
+
+mkdir -p ~/.ssh
+
+# Edit authorized_keys on Agent
+
+nano ~/.ssh/authorized_keys
+
+# Set permissions on Agent
+
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/authorized_keys
+
+# Test SSH connection from Master to Agent
+
+ssh ubuntu@172.31.16.195
+
+# Create Jenkins workspace directory on Agent
+
+mkdir -p /home/ubuntu/jenkins
+
+# Check disk space
+
+df -h
+
+# Clean temporary files
+
+sudo apt clean
+sudo apt autoremove -y
+sudo rm -rf /tmp/*
+
+# Restart Jenkins
+
+sudo systemctl restart jenkins
+
+# Check Jenkins logs
+
+sudo journalctl -u jenkins -n 50
+
